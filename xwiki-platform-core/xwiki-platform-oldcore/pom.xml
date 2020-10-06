@@ -150,7 +150,7 @@
     </dependency>
     <dependency>
       <groupId>org.apache.struts</groupId>
-      <artifactId>struts-core</artifactId>
+      <artifactId>struts2-core</artifactId>
     </dependency>
 
     <!-- Used by parse groovy from page -->
@@ -905,7 +905,7 @@
               **/web/XWikiForm.java,
               **/web/XWikiMessageTool.java,
               **/web/XWikiRequest.java,
-              **/web/XWikiRequestProcessor.java,
+              **/web/XWikiActionMapper.java,
               **/web/XWikiResourceManagerImpl.java,
               **/web/XWikiResponse.java,
               **/web/XWikiServletContext.java,
