@@ -23,8 +23,8 @@ from pygments.lexers import guess_lexer
 from pygments.lexers import get_lexer_by_name
 from pygments.styles import get_style_by_name
 from pygments.util import ClassNotFound
-from pygments.formatters.xdom import XDOMFormatter
-from pygments.styles.xwiki_default import XWikiStyle
+from xwiki_pygments.xdom import XDOMFormatter
+from xwiki_pygments.xwiki_default import XWikiStyle
 
 if language:
   try:

@@ -26,7 +26,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
-import org.python.core.PyNone;
 import org.xwiki.rendering.block.Block;
 import org.xwiki.rendering.block.FormatBlock;
 import org.xwiki.rendering.listener.Format;
@@ -183,7 +182,7 @@ public class BlocksGeneratorPygmentsListener implements PygmentsListener
     {
         Object obj = styles.get(pyName);
 
-        if (obj != null && !(obj instanceof PyNone)) {
+        if (obj != null) {
             styleOut.append(MessageFormat.format(cssPattern, obj));
         }
     }
@@ -198,7 +197,7 @@ public class BlocksGeneratorPygmentsListener implements PygmentsListener
     {
         Object obj = styles.get(pyName);
 
-        if (obj != null && !(obj instanceof PyNone) && ((Boolean) obj)) {
+        if (obj != null && ((Boolean) obj)) {
             styleOut.append(cssValue);
         }
     }

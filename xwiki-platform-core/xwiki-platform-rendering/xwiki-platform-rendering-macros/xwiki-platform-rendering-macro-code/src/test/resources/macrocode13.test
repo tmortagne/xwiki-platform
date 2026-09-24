@@ -196,9 +196,7 @@ onWord [interpreter]
 onSpace
 onSpecialSymbol [=]
 onSpace
-beginFormat [NONE] [[style]=[font-weight: bold; color: #008800; ]]
 onWord [new]
-endFormat [NONE] [[style]=[font-weight: bold; color: #008800; ]]
 onSpace
 onWord [PythonInterpreter]
 onSpecialSymbol [(]
@@ -229,9 +227,9 @@ onWord [you]
 onSpace
 onWord [want]
 onSpace
-beginFormat [NONE] [[style]=[font-weight: bold; color: #008800; ]]
+beginFormat [NONE] [[style]=[color: #007020; ]]
 onWord [to]
-endFormat [NONE] [[style]=[font-weight: bold; color: #008800; ]]
+endFormat [NONE] [[style]=[color: #007020; ]]
 onSpace
 onWord [work]
 onSpace
@@ -1587,7 +1585,9 @@ onWord [result]
 onSpace
 onWord [that]
 onSpace
+beginFormat [NONE] [[style]=[font-weight: bold; color: #008800; ]]
 onWord [has]
+endFormat [NONE] [[style]=[font-weight: bold; color: #008800; ]]
 onSpace
 onWord [been]
 onSpace
@@ -1613,7 +1613,9 @@ onWord [println]
 onSpecialSymbol [(]
 onWord [interpreter]
 onSpecialSymbol [.]
+beginFormat [NONE] [[style]=[font-weight: bold; color: #008800; ]]
 onWord [get]
+endFormat [NONE] [[style]=[font-weight: bold; color: #008800; ]]
 onSpecialSymbol [(]
 beginFormat [NONE] [[style]=[background-color: #fff0f0; ]]
 onSpecialSymbol ["]

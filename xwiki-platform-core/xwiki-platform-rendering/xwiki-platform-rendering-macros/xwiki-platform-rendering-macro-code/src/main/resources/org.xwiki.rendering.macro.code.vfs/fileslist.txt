@@ -1,0 +1,6 @@
+/org.xwiki.rendering.macro.code.vfs/
+/org.xwiki.rendering.macro.code.vfs/src/
+/org.xwiki.rendering.macro.code.vfs/src/pygments.whl
+/org.xwiki.rendering.macro.code.vfs/src/xwiki_pygments/
+/org.xwiki.rendering.macro.code.vfs/src/xwiki_pygments/xdom.py
+/org.xwiki.rendering.macro.code.vfs/src/xwiki_pygments/xwiki_default.py

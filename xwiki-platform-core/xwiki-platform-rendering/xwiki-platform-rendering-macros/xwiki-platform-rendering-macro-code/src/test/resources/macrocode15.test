@@ -2,8 +2,8 @@
 .#-----------------------------------------------------
 .input|xwiki/2.0
 .# Validates that the code macro accurately identifies the language used in the code macro when not specified.
-.# Pygments 2.4.2 identifies the sample below as SQL syntax, and Pygments 2.8.0 as ECL syntax, both presenting an 
-.# highlight of the values, whereas Pygments 2.5.1 to 2.7.0 identifies this sample as MIME syntax, consequently 
+.# Pygments 2.4.2 identifies the sample below as SQL syntax, and Pygments 2.8.0 and above as ECL syntax, both
+.# presenting an highlight of the values, whereas Pygments 2.5.1 to 2.7.0 identifies this sample as MIME syntax, consequently 
 .# proposing a degraded highlighting where the text is in black and each line is framed by a red line.
 .#-----------------------------------------------------
 {{code}}
@@ -29,10 +29,9 @@ beginGroup [[class]=[code]]
 beginFormat [NONE] [[style]=[color: #666666; ]]
 onSpecialSymbol [<]
 onSpecialSymbol [!]
+onSpecialSymbol [-]
+onSpecialSymbol [-]
 endFormat [NONE] [[style]=[color: #666666; ]]
-beginFormat [NONE] [[style]=[font-style: italic; color: #3C7A7A; ]]
-onSpecialSymbol [-]
-onSpecialSymbol [-]
 onSpace
 onWord [disable]
 onSpace
@@ -46,7 +45,6 @@ onWord [connector]
 onSpace
 onWord [instead]
 onNewLine
-endFormat [NONE] [[style]=[font-style: italic; color: #3C7A7A; ]]
 beginFormat [NONE] [[style]=[color: #666666; ]]
 onSpecialSymbol [<]
 endFormat [NONE] [[style]=[color: #666666; ]]
@@ -56,17 +54,17 @@ onWord [port]
 beginFormat [NONE] [[style]=[color: #666666; ]]
 onSpecialSymbol [=]
 endFormat [NONE] [[style]=[color: #666666; ]]
-beginFormat [NONE] [[style]=[color: #19177C; ]]
+beginFormat [NONE] [[style]=[color: #BA2121; ]]
 onSpecialSymbol ["]
 onWord [8080]
 onSpecialSymbol ["]
-endFormat [NONE] [[style]=[color: #19177C; ]]
+endFormat [NONE] [[style]=[color: #BA2121; ]]
 onSpace
 onWord [protocol]
 beginFormat [NONE] [[style]=[color: #666666; ]]
 onSpecialSymbol [=]
 endFormat [NONE] [[style]=[color: #666666; ]]
-beginFormat [NONE] [[style]=[color: #19177C; ]]
+beginFormat [NONE] [[style]=[color: #BA2121; ]]
 onSpecialSymbol ["]
 onWord [HTTP]
 onSpecialSymbol [/]
@@ -74,7 +72,7 @@ onWord [1]
 onSpecialSymbol [.]
 onWord [1]
 onSpecialSymbol ["]
-endFormat [NONE] [[style]=[color: #19177C; ]]
+endFormat [NONE] [[style]=[color: #BA2121; ]]
 onNewLine
 onSpace
 onSpace
@@ -91,11 +89,11 @@ onWord [connectionTimeout]
 beginFormat [NONE] [[style]=[color: #666666; ]]
 onSpecialSymbol [=]
 endFormat [NONE] [[style]=[color: #666666; ]]
-beginFormat [NONE] [[style]=[color: #19177C; ]]
+beginFormat [NONE] [[style]=[color: #BA2121; ]]
 onSpecialSymbol ["]
 onWord [20000]
 onSpecialSymbol ["]
-endFormat [NONE] [[style]=[color: #19177C; ]]
+endFormat [NONE] [[style]=[color: #BA2121; ]]
 onNewLine
 onSpace
 onSpace
@@ -112,13 +110,13 @@ onWord [URIEncoding]
 beginFormat [NONE] [[style]=[color: #666666; ]]
 onSpecialSymbol [=]
 endFormat [NONE] [[style]=[color: #666666; ]]
-beginFormat [NONE] [[style]=[color: #19177C; ]]
+beginFormat [NONE] [[style]=[color: #BA2121; ]]
 onSpecialSymbol ["]
 onWord [UTF]
 onSpecialSymbol [-]
 onWord [8]
 onSpecialSymbol ["]
-endFormat [NONE] [[style]=[color: #19177C; ]]
+endFormat [NONE] [[style]=[color: #BA2121; ]]
 onNewLine
 onSpace
 onSpace
@@ -135,23 +133,22 @@ onWord [redirectPort]
 beginFormat [NONE] [[style]=[color: #666666; ]]
 onSpecialSymbol [=]
 endFormat [NONE] [[style]=[color: #666666; ]]
-beginFormat [NONE] [[style]=[color: #19177C; ]]
+beginFormat [NONE] [[style]=[color: #BA2121; ]]
 onSpecialSymbol ["]
 onWord [8443]
 onSpecialSymbol ["]
-endFormat [NONE] [[style]=[color: #19177C; ]]
+endFormat [NONE] [[style]=[color: #BA2121; ]]
 onSpace
 beginFormat [NONE] [[style]=[color: #666666; ]]
 onSpecialSymbol [/]
 onSpecialSymbol [>]
 endFormat [NONE] [[style]=[color: #666666; ]]
 onNewLine
-beginFormat [NONE] [[style]=[font-style: italic; color: #3C7A7A; ]]
+beginFormat [NONE] [[style]=[color: #666666; ]]
 onSpecialSymbol [-]
 onSpecialSymbol [-]
 onSpecialSymbol [>]
-onNewLine
-endFormat [NONE] [[style]=[font-style: italic; color: #3C7A7A; ]]
+endFormat [NONE] [[style]=[color: #666666; ]]
 endGroup [[class]=[code]]
 endGroup [[class]=[box]]
 endMacroMarkerStandalone [code] [] [<!-- disable to use ajp connector instead

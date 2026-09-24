@@ -34,6 +34,9 @@
     <xwiki.jacoco.instructionRatio>0.84</xwiki.jacoco.instructionRatio>
     <!-- Name to display by the Extension Manager -->
     <xwiki.extension.name>Code Macro</xwiki.extension.name>
+    <pygments.vfs.directory>org.xwiki.rendering.macro.code.vfs</pygments.vfs.directory>
+    <pygments.version>2.21.0</pygments.version>
+    <pygments.wheel>pygments-${pygments.version}-py3-none-any.whl</pygments.wheel>
   </properties>
   <dependencies>
     <dependency>
@@ -46,22 +49,9 @@
       <version>${rendering.version}</version>
     </dependency>
     <dependency>
-      <groupId>org.python</groupId>
-      <artifactId>jython-slim</artifactId>
-    </dependency>
-    <!-- We can't upgrade to version higher than 2.4.2 for two reasons:
-         - 2.5.1 and above presents and issue with the auto-detection of the language of the code (MIME and SQL 
-         syntaxes are too often detected).
-         - Pygments 2.6.0 and above requires Python 3. 
-         Pygments 2.8.0 presents a fix, but requires Python 3.
-         And upgrade to Pygments 2.5.2 is possible by backporting the fix from 
-         Pygments 2.8.0 (https://jira.xwiki.org/browse/XWIKI-18369).   
-         See https://jira.xwiki.org/browse/XWIKI-18363 -->
-    <dependency>
-      <groupId>org.pygments</groupId>
-      <artifactId>pygments</artifactId>
-      <version>2.4.2</version>
-      <scope>runtime</scope>
+      <groupId>org.graalvm.python</groupId>
+      <artifactId>python-embedding</artifactId>
+      <version>25.3.4.1</version>
     </dependency>
     <dependency>
       <groupId>org.xwiki.platform</groupId>
@@ -69,4 +59,31 @@
       <version>${project.version}</version>
     </dependency>
   </dependencies>
+  <build>
+    <plugins>
+      <plugin>
+        <!-- Pygments is imported directly from its wheel (a zip), which the GraalPy virtual filesystem exposes on the
+             Python path. The name is fixed so that the static virtual filesystem index doesn't depend on the version.
+             -->
+        <groupId>com.googlecode.maven-download-plugin</groupId>
+        <artifactId>download-maven-plugin</artifactId>
+        <version>1.13.0</version>
+        <executions>
+          <execution>
+            <id>download-pygments</id>
+            <phase>generate-resources</phase>
+            <goals>
+              <goal>wget</goal>
+            </goals>
+            <configuration>
+              <url>https://files.pythonhosted.org/packages/py3/p/pygments/${pygments.wheel}</url>
+              <sha256>2363c69b61c4a97c838da3b130dcd6468f4848992b21a82f2a63ec34377137d9</sha256>
+              <outputDirectory>${project.build.outputDirectory}/${pygments.vfs.directory}/src</outputDirectory>
+              <outputFileName>pygments.whl</outputFileName>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
 </project>

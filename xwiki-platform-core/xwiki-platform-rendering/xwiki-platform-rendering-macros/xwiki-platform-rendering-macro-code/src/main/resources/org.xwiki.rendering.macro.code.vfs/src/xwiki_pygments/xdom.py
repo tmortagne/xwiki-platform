@@ -20,6 +20,7 @@
 """
 
 from pygments.formatter import Formatter
+from pygments.token import Text, Whitespace
 
 __all__ = ['XDOMFormatter']
 
@@ -42,6 +43,9 @@ class XDOMFormatter(Formatter):
         lasttype = None
         
         for ttype, value in tokensource:
+            # Whitespace is only styled for visible whitespace rendering, so it's treated as plain text.
+            if ttype in Whitespace:
+                ttype = Text
             while ttype not in self.styles:
                 ttype = ttype.parent
             if ttype == lasttype:

@@ -75,7 +75,9 @@ onWord [Juriy]
 onSpace
 onWord [Zaytsev]
 onSpace
+endFormat [NONE] [[style]=[font-style: italic; color: #3C7A7A; ]]
 onNewLine
+beginFormat [NONE] [[style]=[font-style: italic; color: #3C7A7A; ]]
 onSpecialSymbol [/]
 onSpecialSymbol [/]
 onSpace
@@ -100,8 +102,8 @@ onSpecialSymbol [_]
 onWord [json]
 onSpecialSymbol [.]
 onWord [js]
-onNewLine
 endFormat [NONE] [[style]=[font-style: italic; color: #3C7A7A; ]]
+onNewLine
 onSpecialSymbol [(]
 beginFormat [NONE] [[style]=[font-weight: bold; color: #008000; ]]
 onWord [function]
@@ -149,7 +151,9 @@ endFormat [NONE] [[style]=[color: #666666; ]]
 onSpecialSymbol []]
 onSpecialSymbol [,]
 onSpace
+beginFormat [NONE] [[style]=[color: #008000; ]]
 onWord [global]
+endFormat [NONE] [[style]=[color: #008000; ]]
 onSpace
 beginFormat [NONE] [[style]=[color: #666666; ]]
 onSpecialSymbol [=]
@@ -162,7 +166,9 @@ onSpecialSymbol [;]
 onNewLine
 onSpace
 onSpace
+beginFormat [NONE] [[style]=[color: #008000; ]]
 onWord [global]
+endFormat [NONE] [[style]=[color: #008000; ]]
 onSpecialSymbol [.]
 onWord [getJSON]
 onSpace
@@ -252,13 +258,15 @@ onSpace
 onWord [global]
 onSpace
 onWord [function]
-onNewLine
 endFormat [NONE] [[style]=[font-style: italic; color: #3C7A7A; ]]
+onNewLine
 onSpace
 onSpace
 onSpace
 onSpace
+beginFormat [NONE] [[style]=[color: #008000; ]]
 onWord [global]
+endFormat [NONE] [[style]=[color: #008000; ]]
 onSpecialSymbol [[]
 onWord [token]
 onSpecialSymbol []]
@@ -311,8 +319,8 @@ onSpace
 onWord [callback]
 onSpace
 onWord [name]
-onNewLine
 endFormat [NONE] [[style]=[font-style: italic; color: #3C7A7A; ]]
+onNewLine
 onSpace
 onSpace
 onSpace
@@ -410,8 +418,8 @@ onSpace
 onWord [callback]
 onSpace
 onWord [function]
-onNewLine
 endFormat [NONE] [[style]=[font-style: italic; color: #3C7A7A; ]]
+onNewLine
 onSpace
 onSpace
 onSpace
@@ -468,11 +476,13 @@ onSpace
 onSpace
 onSpace
 onSpace
-beginFormat [NONE] [[style]=[font-weight: bold; color: #008000; ]]
+beginFormat [NONE] [[style]=[font-weight: bold; color: #A71FFC; ]]
 onWord [delete]
-endFormat [NONE] [[style]=[font-weight: bold; color: #008000; ]]
+endFormat [NONE] [[style]=[font-weight: bold; color: #A71FFC; ]]
 onSpace
+beginFormat [NONE] [[style]=[color: #008000; ]]
 onWord [global]
+endFormat [NONE] [[style]=[color: #008000; ]]
 onSpecialSymbol [[]
 onWord [token]
 onSpecialSymbol []]
@@ -516,8 +526,8 @@ onSpace
 onWord [be]
 onSpace
 onWord [unique]
-onNewLine
 endFormat [NONE] [[style]=[font-style: italic; color: #3C7A7A; ]]
+onNewLine
 onSpace
 onSpace
 onSpace

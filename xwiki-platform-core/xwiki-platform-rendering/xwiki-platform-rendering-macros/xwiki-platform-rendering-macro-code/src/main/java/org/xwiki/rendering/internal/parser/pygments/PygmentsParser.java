@@ -19,25 +19,28 @@
  */
 package org.xwiki.rendering.internal.parser.pygments;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
 import java.io.StringReader;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Path;
 import java.util.Collections;
 import java.util.List;
 
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
-import javax.script.ScriptContext;
-import javax.script.ScriptEngine;
-import javax.script.ScriptEngineManager;
-import javax.script.ScriptException;
-import javax.script.SimpleScriptContext;
 
 import org.apache.commons.io.IOUtils;
+import org.graalvm.polyglot.Context;
+import org.graalvm.polyglot.Engine;
+import org.graalvm.polyglot.Value;
+import org.graalvm.python.embedding.GraalPyResources;
+import org.graalvm.python.embedding.VirtualFileSystem;
 import org.xwiki.component.annotation.Component;
+import org.xwiki.component.phase.Disposable;
 import org.xwiki.component.phase.Initializable;
 import org.xwiki.component.phase.InitializationException;
 import org.xwiki.rendering.block.Block;
@@ -60,7 +63,7 @@ import org.xwiki.rendering.syntax.SyntaxType;
 // component.
 @Component(roles = {HighlightParser.class })
 @Singleton
-public class PygmentsParser extends AbstractHighlightParser implements Initializable
+public class PygmentsParser extends AbstractHighlightParser implements Initializable, Disposable
 {
     /**
      * The name of the style variable in Python code.
@@ -88,9 +91,19 @@ public class PygmentsParser extends AbstractHighlightParser implements Initializ
     private static final String PY_LEXER_VARNAME = "pygmentLexer";
 
     /**
-     * The identifier of the Java Scripting engine to use.
+     * The identifier of the polyglot language to use.
      */
     private static final String ENGINE_ID = "python";
+
+    /**
+     * The classpath directory of the GraalPy virtual filesystem containing Pygments.
+     */
+    private static final String VFS_DIRECTORY = "org.xwiki.rendering.macro.code.vfs";
+
+    /**
+     * The Pygments wheel in the virtual filesystem.
+     */
+    private static final String PYGMENTS_WHEEL = "pygments.whl";
 
     /**
      * The syntax identifier.
@@ -111,9 +124,11 @@ public class PygmentsParser extends AbstractHighlightParser implements Initializ
     private PygmentsParserConfiguration configuration;
 
     /**
-     * The JSR223 Script Engine we use to evaluate Python scripts.
+     * The polyglot engine shared by all the Python contexts, so that parsed code is cached across highlights.
      */
-    private ScriptEngine engine;
+    private Engine engine;
+
+    private Context.Builder contextBuilder;
 
     /**
      * The Python script used to manipulate Pygments.
@@ -123,7 +138,19 @@ public class PygmentsParser extends AbstractHighlightParser implements Initializ
     @Override
     public void initialize() throws InitializationException
     {
-        ScriptEngineManager scriptEngineManager = new ScriptEngineManager();
+        VirtualFileSystem vfs = VirtualFileSystem.newBuilder()
+            .resourceDirectory(VFS_DIRECTORY)
+            .resourceLoadingClass(getClass())
+            .extractFilter(path -> PYGMENTS_WHEEL.equals(String.valueOf(path.getFileName())))
+            .build();
+        // Without a JDK matching the GraalPy version, Truffle runs interpreted and warns about it on the console.
+        this.engine = Engine.newBuilder(ENGINE_ID)
+            .option("engine.WarnInterpreterOnly", "false")
+            .build();
+        Path srcPath = Path.of(vfs.getMountPoint(), "src");
+        this.contextBuilder = GraalPyResources.contextBuilder(vfs)
+            .engine(this.engine)
+            .option("python.PythonPath", srcPath + File.pathSeparator + srcPath.resolve(PYGMENTS_WHEEL));
 
         // Get the script
         InputStream is = getClass().getResourceAsStream("/pygments/code.py");
@@ -137,13 +164,6 @@ public class PygmentsParser extends AbstractHighlightParser implements Initializ
             }
         } else {
             throw new InitializationException("Failed to find resource /pygments/code.py resource");
-        }
-
-        // Get the Python engine
-        this.engine = scriptEngineManager.getEngineByName(ENGINE_ID);
-
-        if (this.engine == null) {
-            throw new InitializationException("Failed to find engine for Python script language");
         }
 
         String highlightSyntaxId = getSyntaxId() + "-highlight";
@@ -171,11 +191,7 @@ public class PygmentsParser extends AbstractHighlightParser implements Initializ
         }
 
         List<Block> blocks;
-        try {
-            blocks = highlight(syntaxId, code);
-        } catch (ScriptException e) {
-            throw new ParseException("Failed to highlight code", e);
-        }
+        blocks = highlight(syntaxId, code);
 
         // TODO: there is a bug in Pygments that makes it always put a newline at the end of the content
         if (code.charAt(code.length() - 1) != '\n' && !blocks.isEmpty()
@@ -192,29 +208,37 @@ public class PygmentsParser extends AbstractHighlightParser implements Initializ
      * @param syntaxId the identifier of the source syntax.
      * @param code the content to highlight.
      * @return the highlighted version of the provided source.
-     * @throws ScriptException when failed to execute the script
      * @throws ParseException when failed to parse the content as plain text
      */
-    private List<Block> highlight(String syntaxId, String code) throws ScriptException, ParseException
+    private List<Block> highlight(String syntaxId, String code) throws ParseException
     {
         BlocksGeneratorPygmentsListener listener = new BlocksGeneratorPygmentsListener(this.plainTextParser);
 
-        ScriptContext scriptContext = new SimpleScriptContext();
-
-        scriptContext.setAttribute(PY_LANGUAGE_VARNAME, syntaxId, ScriptContext.ENGINE_SCOPE);
-        scriptContext.setAttribute(PY_CODE_VARNAME, code, ScriptContext.ENGINE_SCOPE);
-        scriptContext.setAttribute(PY_STYLE_VARNAME, this.configuration.getStyle(), ScriptContext.ENGINE_SCOPE);
-        scriptContext.setAttribute(PY_LISTENER_VARNAME, listener, ScriptContext.ENGINE_SCOPE);
-
-        this.engine.eval(this.script, scriptContext);
-
         List<Block> blocks;
-        if (scriptContext.getAttribute(PY_LEXER_VARNAME) != null) {
-            blocks = listener.getBlocks();
-        } else {
-            blocks = this.plainTextParser.parse(new StringReader(code)).getChildren().get(0).getChildren();
+        try (Context context = this.contextBuilder.build()) {
+            Value bindings = context.getBindings(ENGINE_ID);
+            bindings.putMember(PY_LANGUAGE_VARNAME, syntaxId);
+            bindings.putMember(PY_CODE_VARNAME, code);
+            bindings.putMember(PY_STYLE_VARNAME, this.configuration.getStyle());
+            bindings.putMember(PY_LISTENER_VARNAME, listener);
+            context.eval(ENGINE_ID, this.script);
+
+            Value lexer = bindings.getMember(PY_LEXER_VARNAME);
+            if (lexer != null && !lexer.isNull()) {
+                blocks = listener.getBlocks();
+            } else {
+                blocks = this.plainTextParser.parse(new StringReader(code)).getChildren().get(0).getChildren();
+            }
         }
 
         return blocks;
+    }
+
+    @Override
+    public void dispose()
+    {
+        if (this.engine != null) {
+            this.engine.close();
+        }
     }
 }
